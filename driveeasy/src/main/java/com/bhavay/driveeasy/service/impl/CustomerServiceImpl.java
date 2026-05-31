@@ -3,6 +3,7 @@ package com.bhavay.driveeasy.service.impl;
 import com.bhavay.driveeasy.dto.CreateCustomerRequest;
 import com.bhavay.driveeasy.dto.CustomerResponse;
 import com.bhavay.driveeasy.entity.Customer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bhavay.driveeasy.exception.ResourceNotFoundException;
 import com.bhavay.driveeasy.repository.CustomerRepository;
 import com.bhavay.driveeasy.service.CustomerService;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public CustomerResponse createCustomer(CreateCustomerRequest request) {
@@ -25,7 +27,11 @@ public class CustomerServiceImpl implements CustomerService {
                 .lastName(request.lastName())
                 .email(request.email())
                 .phone(request.phone())
-                .password(request.password())
+                .password(
+                        passwordEncoder.encode(
+                                request.password()
+                        )
+                )
                 .role(request.role())
                 .build();
 
