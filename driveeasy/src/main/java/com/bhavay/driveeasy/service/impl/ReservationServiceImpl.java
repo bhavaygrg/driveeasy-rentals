@@ -3,6 +3,7 @@ package com.bhavay.driveeasy.service.impl;
 import com.bhavay.driveeasy.dto.CreateReservationRequest;
 import com.bhavay.driveeasy.dto.ReservationResponse;
 import com.bhavay.driveeasy.entity.Car;
+import java.util.List;
 import com.bhavay.driveeasy.entity.Customer;
 import com.bhavay.driveeasy.entity.Reservation;
 import com.bhavay.driveeasy.enums.ReservationStatus;
@@ -80,5 +81,38 @@ public class ReservationServiceImpl implements ReservationService {
                 savedReservation.getTotalAmount(),
                 savedReservation.getStatus().name()
         );
+    }
+    @Override
+    public ReservationResponse getReservation(Long reservationId) {
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Reservation not found"));
+
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getCustomer().getId(),
+                reservation.getCar().getId(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                reservation.getTotalAmount(),
+                reservation.getStatus().name()
+        );
+    }
+    @Override
+    public List<ReservationResponse> getAllReservations() {
+
+        return reservationRepository.findAll()
+                .stream()
+                .map(r -> new ReservationResponse(
+                        r.getId(),
+                        r.getCustomer().getId(),
+                        r.getCar().getId(),
+                        r.getStartDate(),
+                        r.getEndDate(),
+                        r.getTotalAmount(),
+                        r.getStatus().name()
+                ))
+                .toList();
     }
 }
